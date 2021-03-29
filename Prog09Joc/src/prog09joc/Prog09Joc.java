@@ -37,6 +37,9 @@ public class Prog09Joc {
         String fitxaNegra = null;
         String idFitxaBlanca = null;
         String idFitxaNegra = null;
+        String idFitxaBlancaOcupaBloc = null;
+        String idFitxaNegraOcupaBloc = null;
+        String idCasellaBloc="\u001B[41;34mX\u001B[0m";
         String filaBlanca = null;
         String columnaBlanca = null;
         String filaNegra = null;
@@ -70,6 +73,7 @@ public class Prog09Joc {
                 fn = new Alfil();
                 fn.setColor("n");
                 idFitxaNegra = "\u265D";
+                idFitxaNegraOcupaBloc="\u001B[41;34m"+idFitxaNegra+"\u001B[0m";
 
             } else if (fitxaBlanca.equals("A") || fitxaBlanca.equals("a")) {
 
@@ -78,6 +82,7 @@ public class Prog09Joc {
                 fb = new Alfil();
                 fb.setColor("b");
                 idFitxaBlanca = "\u2657";
+                idFitxaBlancaOcupaBloc="\u001B[41;34m"+idFitxaBlanca+"\u001B[0m";
 
                 //TORRE NEGRE
                 fitxaNegra = "torre";
@@ -262,9 +267,9 @@ public class Prog09Joc {
 
         // Assignam posicio casella bloquejada en tauler
         if (fitxaBlanca.equals("alfil")) {
-            partida.insereixPosicio(((Alfil) fb).getBloc(), "\u001B[41;34mX\u001B[0m");
+            partida.insereixPosicio(((Alfil) fb).getBloc(), idCasellaBloc);
         } else {
-            partida.insereixPosicio(((Alfil) fn).getBloc(), "\u001B[41;34mX\u001B[0m");
+            partida.insereixPosicio(((Alfil) fn).getBloc(), idCasellaBloc);
         }
 
         partida.mostraTauler();
@@ -340,18 +345,24 @@ public class Prog09Joc {
                                 fitxaGuanyadora = "fb";
                             }
                         }
-
                     } else {
                         // La fitxa blanca es l'alfil, per tant pot ocupar la casella bloquejada
-                        // Tornam a assignar el valor X a la casella bloquejada
-                        // per si l'alfil la va ocupar en el moviment anterior
-                        partida.insereixPosicio(((Alfil) fb).getBloc(), "\u001B[41;34mX\u001B[0m");
                         // Esborram posicio fitxa blanca (abans moviment) en tauler
                         partida.insereixPosicio(fb.getPosicio(), "·");
+                        // Tornam a assignar el valor X a la casella bloquejada
+                        // per si l'alfil la va ocupar en el moviment anterior
+                        partida.insereixPosicio(((Alfil) fb).getBloc(), idCasellaBloc);
                         // Modificam posició en objecte fb
                         fb.setPosicio(posFBPossible);
                         // Assignam nova posicio fitxa blanca en tauler
-                        partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca);
+                        // Canviam el format de la fitxa a visualitzar en funció
+                        // de si ocupa casella bloquetjada o no
+                        if(fb.getPosicio().getFila()==((Alfil) fb).getBloc().getFila() &&
+                                fb.getPosicio().getColumna()==((Alfil)fb).getBloc().getColumna()){
+                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlancaOcupaBloc); 
+                        } else{
+                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca); 
+                        }
                         movimentFBOK = true;
                         // Comprovam si fitxa blanca mata a fitxa negra
                         if (fb.getPosicio().getFila() == fn.getPosicio().getFila() && fb.getPosicio().getColumna() == fn.getPosicio().getColumna()) {
@@ -397,17 +408,53 @@ public class Prog09Joc {
                     // el qual determinara si el moviment és vàlid
                     movimentFNOK = fn.moureA(posFNPossible);
                     if (movimentFNOK) {
-                        // Esborram posicio fitxa negra (abans moviment) en tauler
-                        partida.insereixPosicio(fn.getPosicio(), "·");
-                        // Modificam posició en objecte fb
-                        fn.setPosicio(posFNPossible);
-                        // Assignam nova posicio fitxa negra en tauler
-                        partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
-                        movimentFNOK = true;
-                        // Comprovam si fitxa negra mata a fitxa blanca
-                        if (fn.getPosicio().getFila() == fb.getPosicio().getFila() && fn.getPosicio().getColumna() == fb.getPosicio().getColumna()) {
-                            partidaAcabada = true;
-                            fitxaGuanyadora = "fn";
+                        // Un cop comprovat que el moviment és valid, en el cas 
+                        // que la fitxa negra sigui la torre, cal comprovar 
+                        // que no ocupi la casella bloqiejada per l'alfil
+                        if (fitxaNegra == "torre") {
+                            if (indexFilaNegra == indexFilaBloc && indexColumnaNegra == indexColumnaBloc) {
+                                //La torre vol ocupar la casella bloquejada, aquest moviment NO es possible 
+                                System.out.println("\n" + "\u001B[31mLA TORRE NO POT OCUPAR LA CASELLA BLOQUEJADA PER L'ALFIL!!!!\u001B[0m");
+                                movimentFBOK = false;
+                            } else {
+                                // La torre NO ocupa casella bloquejada
+                                // Esborram posicio fitxa negra (abans moviment) en tauler
+                                partida.insereixPosicio(fn.getPosicio(), "·");
+                                // Modificam posició en objecte fb
+                                fn.setPosicio(posFNPossible);
+                                // Assignam nova posicio fitxa negra en tauler
+                                partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
+                                movimentFNOK = true;
+                                // Comprovam si fitxa negra mata a fitxa blanca
+                                if (fn.getPosicio().getFila() == fb.getPosicio().getFila() && fn.getPosicio().getColumna() == fb.getPosicio().getColumna()) {
+                                    partidaAcabada = true;
+                                    fitxaGuanyadora = "fn";
+                                }
+                            }
+                        } else {
+                            // La fitxa negra es l'alfil, per tant pot ocupar la casella bloquejada
+                            // Esborram posicio fitxa negra (abans moviment) en tauler
+                            partida.insereixPosicio(fn.getPosicio(), "·");
+                            // Tornam a assignar el valor X a la casella bloquejada
+                            // per si l'alfil la va ocupar en el moviment anterior
+                            partida.insereixPosicio(((Alfil) fn).getBloc(), idCasellaBloc);
+                            // Modificam posició en objecte fb
+                            fn.setPosicio(posFNPossible);
+                            // Assignam nova posicio fitxa negra en tauler
+                            // Canviam el format de la fitxa a visualitzar en funció
+                            // de si ocupa casella bloquetjada o no
+                            if (fn.getPosicio().getFila() == ((Alfil) fn).getBloc().getFila()
+                                    && fn.getPosicio().getColumna() == ((Alfil) fn).getBloc().getColumna()) {
+                                partida.insereixPosicio(fn.getPosicio(), idFitxaNegraOcupaBloc);
+                            } else {
+                                partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
+                            }
+                            movimentFNOK = true;
+                            // Comprovam si fitxa negra mata a fitxa blanca
+                            if (fn.getPosicio().getFila() == fb.getPosicio().getFila() && fn.getPosicio().getColumna() == fb.getPosicio().getColumna()) {
+                                partidaAcabada = true;
+                                fitxaGuanyadora = "fn";
+                            }
                         }
                     }
                 } while (!movimentFNOK);
