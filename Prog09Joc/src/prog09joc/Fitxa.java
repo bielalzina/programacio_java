@@ -10,19 +10,16 @@ package prog09joc;
  * @author gabriel
  */
 public abstract class Fitxa {
-    
+
     //atributs
     protected Casella posicio;
     protected String color;
-    
-    //Constructors
 
+    //Constructors
     public Fitxa() {
     }
-    
-    
-    // Metodes
 
+    // Metodes
     public Casella getPosicio() {
         return posicio;
     }
@@ -42,7 +39,4 @@ public abstract class Fitxa {
     // metode moureA
     public abstract boolean moureA(Casella c);
 
-    
-    
-    
 }

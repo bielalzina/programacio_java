@@ -39,13 +39,14 @@ public class Prog09Joc {
         String idFitxaNegra = null;
         String idFitxaBlancaOcupaBloc = null;
         String idFitxaNegraOcupaBloc = null;
-        String idCasellaBloc="\u001B[41;34mX\u001B[0m";
+        String idCasellaBloc = "\u001B[41;34mX\u001B[0m";
         String filaBlanca = null;
         String columnaBlanca = null;
         String filaNegra = null;
         String columnaNegra = null;
         String filaBloc = null;
         String columnaBloc = null;
+        String videsTorre = null;
         int indexFilaBlanca = -1;
         int indexColumnaBlanca = -1;
         int indexFilaNegra = -1;
@@ -73,7 +74,7 @@ public class Prog09Joc {
                 fn = new Alfil();
                 fn.setColor("n");
                 idFitxaNegra = "\u265D";
-                idFitxaNegraOcupaBloc="\u001B[41;34m"+idFitxaNegra+"\u001B[0m";
+                idFitxaNegraOcupaBloc = "\u001B[41;34m" + idFitxaNegra + "\u001B[0m";
 
             } else if (fitxaBlanca.equals("A") || fitxaBlanca.equals("a")) {
 
@@ -82,7 +83,7 @@ public class Prog09Joc {
                 fb = new Alfil();
                 fb.setColor("b");
                 idFitxaBlanca = "\u2657";
-                idFitxaBlancaOcupaBloc="\u001B[41;34m"+idFitxaBlanca+"\u001B[0m";
+                idFitxaBlancaOcupaBloc = "\u001B[41;34m" + idFitxaBlanca + "\u001B[0m";
 
                 //TORRE NEGRE
                 fitxaNegra = "torre";
@@ -274,6 +275,30 @@ public class Prog09Joc {
 
         partida.mostraTauler();
 
+        // Demanam a l'usuari el numero de vides de la TORRE
+        System.out.println("\nSI L'ALFIL POT BLOQUEJAR UNA CASELLA, LA TORRE POT DISPOSAR DE n VIDES");
+        int numVidesTorre = -1;
+        do {
+            videsTorre = lecturaTeclat("\nINDICA EL NUMERO SENCER (>=1) DE VIDES ASSIGNAT A LA TORRE: ");
+            try {
+                numVidesTorre = Integer.parseInt(videsTorre);
+                if (numVidesTorre < 1) {
+                    System.out.println("\n" + "\u001B[31mHAS INTRODUIT UN NUMERO INCORRECTE DE VIDES!!!!\u001B[0m");
+                    videsTorre = "X";
+                }
+            } catch (Exception e) {
+                System.out.println("\n" + "\u001B[31mHAS INTRODUIT UN FORMAT INCORRECTE DE VIDES!!!!\u001B[0m");
+                videsTorre = "X";
+            }
+        } while (videsTorre.equals("X"));
+
+        // Set atribut VIDES per TORRE
+        if (fitxaBlanca.equals("torre")) {
+            ((Torre) fb).setVides(numVidesTorre);
+        } else {
+            ((Torre) fn).setVides(numVidesTorre);
+        }
+
         System.out.print("\n");
         System.out.println("********************");
         System.out.println("*\u001B[32m COMENÇAM PARTIDA \u001B[0m*");
@@ -357,17 +382,43 @@ public class Prog09Joc {
                         // Assignam nova posicio fitxa blanca en tauler
                         // Canviam el format de la fitxa a visualitzar en funció
                         // de si ocupa casella bloquetjada o no
-                        if(fb.getPosicio().getFila()==((Alfil) fb).getBloc().getFila() &&
-                                fb.getPosicio().getColumna()==((Alfil)fb).getBloc().getColumna()){
-                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlancaOcupaBloc); 
-                        } else{
-                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca); 
+                        if (fb.getPosicio().getFila() == ((Alfil) fb).getBloc().getFila()
+                                && fb.getPosicio().getColumna() == ((Alfil) fb).getBloc().getColumna()) {
+                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlancaOcupaBloc);
+                        } else {
+                            partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca);
                         }
                         movimentFBOK = true;
-                        // Comprovam si fitxa blanca mata a fitxa negra
+                        // Comprovam si fitxa blanca (ALFIL) mata a fitxa negra (TORRE)
                         if (fb.getPosicio().getFila() == fn.getPosicio().getFila() && fb.getPosicio().getColumna() == fn.getPosicio().getColumna()) {
-                            partidaAcabada = true;
-                            fitxaGuanyadora = "fb";
+                            //Cal comprovar quantes vides li queden a la torre
+                            int videsRestantsTorre;
+                            videsRestantsTorre = ((Torre) fn).getVides();
+                            if (videsRestantsTorre > 1) {
+                                // La partida encara no ha acabat
+                                // Restam 1 vida a la torre
+                                ((Torre) fn).setVides(videsRestantsTorre - 1);
+                                // Resetejam tauler
+                                partida.emplenaTauler();
+                                // Retornam fitxes blanca i negra a les posicions escollides inicialment
+                                // Feim el mateix en tauler
+                                fb.setPosicio(posFB);
+                                partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca);
+                                fn.setPosicio(posFN);
+                                partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
+                                // Tornam a inserir casella bloquejada
+                                partida.insereixPosicio(((Alfil) fb).getBloc(), idCasellaBloc);
+                                // Informam a l'usuari de la situació
+                                System.out.print("\n");
+                                System.out.println("\u001B[34mL'ALFIL HA GUANYAT UNA BATALLA, PERÒ LA GUERRA CONTINUA\u001B[0m");
+                                System.out.println("\u001B[31mA LA TORRE LI QUEDEN " + ((Torre) fn).getVides() + " VIDES\u001B[0m");
+                                System.out.println("\u001B[34mTORNA A COMENÇAR EL JOCS DES DE LES POSICIONS INICIALMENT ESCOLLIDES\u001B[0m");
+                                System.out.print("\n");
+                            } else {
+                                // La partida ha acabat
+                                partidaAcabada = true;
+                                fitxaGuanyadora = "fb";
+                            }
                         }
                     }
                 }
@@ -450,10 +501,36 @@ public class Prog09Joc {
                                 partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
                             }
                             movimentFNOK = true;
-                            // Comprovam si fitxa negra mata a fitxa blanca
+                            // Comprovam si la fitxa negra (ALFIL) mata a la fitxa blanca (TORRE)
                             if (fn.getPosicio().getFila() == fb.getPosicio().getFila() && fn.getPosicio().getColumna() == fb.getPosicio().getColumna()) {
-                                partidaAcabada = true;
-                                fitxaGuanyadora = "fn";
+                                //Cal comprovar quantes vides li queden a la torre
+                                int videsRestantsTorre;
+                                videsRestantsTorre = ((Torre) fb).getVides();
+                                if (videsRestantsTorre > 1) {
+                                    // La partida encara no ha acabat
+                                    // Restam 1 vida a la torre
+                                    ((Torre) fb).setVides(videsRestantsTorre - 1);
+                                    // Resetejam tauler
+                                    partida.emplenaTauler();
+                                    // Retornam fitxes blanca i negra a les posicions escollides inicialment
+                                    // Feim el mateix en tauler
+                                    fb.setPosicio(posFB);
+                                    partida.insereixPosicio(fb.getPosicio(), idFitxaBlanca);
+                                    fn.setPosicio(posFN);
+                                    partida.insereixPosicio(fn.getPosicio(), idFitxaNegra);
+                                    // Tornam a inserir casella bloquejada
+                                    partida.insereixPosicio(((Alfil) fn).getBloc(), idCasellaBloc);
+                                    // Informam a l'usuari de la situació
+                                    System.out.print("\n");
+                                    System.out.println("\u001B[34mL'ALFIL HA GUANYAT UNA BATALLA, PERÒ LA GUERRA CONTINUA\u001B[0m");
+                                    System.out.println("\u001B[31mA LA TORRE LI QUEDEN " + ((Torre) fb).getVides() + " VIDES\u001B[0m");
+                                    System.out.println("\u001B[34mTORNA A COMENÇAR EL JOC DES DE LES POSICIONS INICIALMENT ESCOLLIDES\u001B[0m");
+                                    System.out.print("\n");
+                                } else {
+                                    // La partida ha acabat
+                                    partidaAcabada = true;
+                                    fitxaGuanyadora = "fn";
+                                }
                             }
                         }
                     }

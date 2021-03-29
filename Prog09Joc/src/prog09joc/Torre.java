@@ -9,19 +9,16 @@ package prog09joc;
  *
  * @author gabriel
  */
-public class Torre extends Fitxa{
+public class Torre extends Fitxa {
+
     // atributs
     protected int vides;
-    
-    //constructor
 
+    //constructor
     public Torre() {
     }
-    
-    
-    
-    //metodes
 
+    //metodes
     public int getVides() {
         return vides;
     }
@@ -30,29 +27,28 @@ public class Torre extends Fitxa{
         this.vides = vides;
     }
 
-    
     // Metode moureA()
     @Override
     public boolean moureA(Casella c) {
-        int filaFutura=c.getFila();
-        int columnaFutura=c.getColumna();
-        int filaActual=this.getPosicio().getFila();
-        int columnaActual=this.getPosicio().getColumna();
-        if (filaFutura==filaActual && columnaFutura==columnaActual){
+        int filaFutura = c.getFila();
+        int columnaFutura = c.getColumna();
+        int filaActual = this.getPosicio().getFila();
+        int columnaActual = this.getPosicio().getColumna();
+        if (filaFutura == filaActual && columnaFutura == columnaActual) {
             // LA FITXA NO ES MOU, LA NOVA POSICIÓ COINCIDEIX AMB L'ACTUAL
             System.out.println("\u001B[31mES OBLIGATORI MOURE LA FITXA!!!\u001B[0m");
             return false;
-        } else if (filaFutura==filaActual || columnaFutura==columnaActual){
+        } else if (filaFutura == filaActual || columnaFutura == columnaActual) {
             // LA TORRE ES POT MOURE EN VERTICAL O HORITZONTAL, EL MOVIMENT SERA VALID
             // SI ES MOU EN LA MATEIXA FILA (filaFutura==filaActual)
             // O
             // SI ES MOU EN LA MATEIXA COLUMNA (columnaFutura==columnaActual)
             return true;
-        }else{
+        } else {
             //MOVIMENT NO PERMÉS PER LA TORRE
             System.out.println("\u001B[31mLA TORRE NOMÉS ES POT MOURE HORITZONTALMENT O VERTICAMENT!!!\u001B[0m");
             return false;
         }
     }
-    
+
 }

@@ -10,13 +10,12 @@ package prog09joc;
  * @author gabriel
  */
 public class Casella {
-    
+
     // atributs
     private int fila;
     private int columna;
 
     // constructor
-
     public Casella() {
     }
 
@@ -24,12 +23,8 @@ public class Casella {
         this.fila = fila;
         this.columna = columna;
     }
-    
-    
-    
-    
-    //metodes
 
+    //metodes
     public int getFila() {
         return fila;
     }
@@ -45,7 +40,5 @@ public class Casella {
     public void setColumna(int columna) {
         this.columna = columna;
     }
-    
-    
-    
+
 }
