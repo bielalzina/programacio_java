@@ -13,6 +13,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger; 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
@@ -46,9 +48,9 @@ public class AlzinaAlomarProg11 {
                 case 5 ->
                     aap11.afegeixAlumne();
                 case 6 ->
-                    aap11.mostraAlumnes();
+                    aap11.eliminaAlumne();
                 case 7 ->
-                    aap11.mostraAlumnes();
+                    aap11.modificaTutor();
                 case 0 ->
                     System.out.println("\n" + "\u001B[32mPROGRAMA FINALITZAT.\u001B[0m" + "\n");
                 default ->
@@ -333,78 +335,241 @@ public class AlzinaAlomarProg11 {
 
     }
     
-    //METODE PARA INSERIR NOU TUTOR
+    //METODE PARA INSERIR NOU ALUMNE
     public void afegeixAlumne() {
 
-        Scanner entradaCodi = new Scanner(System.in);
+        Scanner entradaCodiAlumne = new Scanner(System.in);
         String codiAlumne;
         System.out.print("\nINTRODUEIX EL CODI DE L'ALUMNE (INICIALS + 2 DIGITS): ");
+        codiAlumne = entradaCodiAlumne.nextLine();
 
-        try {
-            codiAlumne = entradaCodi.nextLine();
-             
-            
-            /*
-            if (codiTutor > 0) {
+        if (validaCodiAlumne(codiAlumne)) {
 
-                Connection con;
-                Statement stmt1;
-                ResultSet rs1;
-                Statement stmt2;
+            Connection con;
+            Statement stmt0;
+            ResultSet rs0;
+            Statement stmt1;
+            ResultSet rs1;
+            Statement stmt2;
 
-                try {
-                    con = estableixConnexio();
-                    if (con != null) {
+            try {
+                con = estableixConnexio();
+                if (con != null) {
 
-                        // Crear una sentencia amb l'SQL que volem executar
-                        stmt1 = con.createStatement();
+                    // Crear una sentencia amb l'SQL que volem executar
+                    stmt0 = con.createStatement();
 
-                        // execució de la sentencia 
-                        rs1 = stmt1.executeQuery("SELECT nomTutor FROM Tutor WHERE codiTutor =" + codiTutor + "");
+                    // execució de la sentencia 
+                    rs0 = stmt0.executeQuery("SELECT codiAlumne FROM Alumno WHERE codiAlumne ='" + codiAlumne + "'");
 
-                        if (rs1.next() == false) {
+                    if (rs0.next() == false) {
 
-                            Scanner entradaNom = new Scanner(System.in);
-                            String nomLlinatgesTutor;
-                            System.out.print("\nINTRODUEIX EL NOM I LLINATGES DEL TUTOR: ");
-                            nomLlinatgesTutor = entradaNom.nextLine();
+                        Scanner entradaCodiTutor = new Scanner(System.in);
+                        int codiTutor;
+                        System.out.print("\nINTRODUEIX EL CODI DEL TUTOR (numero sencer i positiu): ");
 
-                            stmt2 = con.createStatement();
+                        try {
+                            codiTutor = entradaCodiTutor.nextInt();
 
-                            // execució de la sentencia 
-                            stmt2.executeUpdate("INSERT INTO Tutor (codiTutor, nomTutor) VALUES (" + codiTutor + ",'" + nomLlinatgesTutor + "')");
-                            System.out.println("\u001B[34m\nTUTOR (" + nomLlinatgesTutor + ") AFEGIT A BBDD\u001B[0m" + "\n");
-                            stmt2.close();
+                            try {
+                                // Crear una sentencia amb l'SQL que volem executar
+                                stmt1 = con.createStatement();
 
-                        } else {
-                            System.out.println("\n" + "\u001B[31mEL CODI DE TUTOR INTRODUÏT JA EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                                // execució de la sentencia 
+                                rs1 = stmt1.executeQuery("SELECT codiTutor FROM Tutor WHERE codiTutor =" + codiTutor + "");
+
+                                if (rs1.next() == true) {
+
+                                    Scanner entradaNom = new Scanner(System.in);
+                                    String nomLlinatgesAlumne;
+                                    System.out.print("\nINTRODUEIX EL NOM I LLINATGES DE L'ALUMNE: ");
+                                    nomLlinatgesAlumne = entradaNom.nextLine();
+
+                                    try{
+                                      
+                                        stmt2 = con.createStatement();
+
+                                        // execució de la sentencia 
+                                        stmt2.executeUpdate("INSERT INTO  Alumno (codiAlumne, nomAlumne, codiTutorAlumne) VALUES ('" + codiAlumne + "','" + nomLlinatgesAlumne + "'," + codiTutor + ")");
+                                        System.out.println("\u001B[34m\nALUMNE (" + nomLlinatgesAlumne + ") AFEGIT A BBDD\u001B[0m" + "\n");
+                                        
+                                        stmt2.close(); 
+                                    
+                                    } catch (SQLException ex) {
+                                        System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER AFEGIR NOU ALUMNE\u001B[0m");
+                                    }
+                                    
+
+                                } else {
+                                    System.out.println("\n" + "\u001B[31mEL CODI DE TUTOR INTRODUÏT NO EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                                    System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
+                                }
+
+                                rs1.close();
+                                stmt1.close();
+
+                            } catch (SQLException ex) {
+                                System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR CODI TUTOR EXISTENT\u001B[0m");
+                            }
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("\n" + "\u001B[31mHAS INTRODUÏT UN CODI DE TUTOR AMB UN FORMAT INCORRECTE.\u001B[0m");
                             System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
                         }
 
-                        // tancar les connexions
-                        rs1.close();
-                        stmt1.close();
-
-                        tancaConnexio(con);
                     } else {
-                        System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
+                        System.out.println("\n" + "\u001B[31mAQUEST CODI D'ALUMNE JA EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                        System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
                     }
 
-                } catch (SQLException ex) {
-                    System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL\u001B[0m");
+                    rs0.close();
+                    stmt0.close();
+                    tancaConnexio(con);
+                } else {
+                    System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
                 }
 
-            } else {
-                System.out.println("\n" + "\u001B[31mHAS INTRODUÏT UN CODI DE TUTOR NEGATIU.\u001B[0m");
-                System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
+            } catch (SQLException ex) {
+                System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR CODI ALUMNE NO REPETIT\u001B[0m");
             }
-            */
 
-        } catch (InputMismatchException e) {
-
-            System.out.println("\n" + "\u001B[31mHAS INTRODUÏT UN CODI DE TUTOR AMB UN FORMAT INCORRECTE.\u001B[0m");
+        } else {
+            System.out.println("\n" + "\u001B[31mHAS INTRODUÏT UN CODI D'ALUMNE AMB UN FORMAT INCORRECTE.\u001B[0m");
             System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
         }
+
+    }
+    
+    //METODE PER ELIMINAR ALUMNE
+    public void eliminaAlumne() {
+
+        Scanner entradaCodiAlumne = new Scanner(System.in);
+        String codiAlumne;
+        System.out.print("\nINTRODUEIX EL CODI DE L'ALUMNE (INICIALS + 2 DIGITS): ");
+        codiAlumne = entradaCodiAlumne.nextLine();
+        
+        Connection con;
+        Statement stmt0;
+        ResultSet rs0;
+        Statement stmt1;
+        ResultSet rs1;
+        
+        try {
+            con = estableixConnexio();
+            if (con != null) {
+
+                // Crear una sentencia amb l'SQL que volem executar
+                stmt0 = con.createStatement();
+
+                // execució de la sentencia 
+                rs0 = stmt0.executeQuery("SELECT codiAlumne FROM Alumno WHERE codiAlumne ='" + codiAlumne + "'");
+
+                if (rs0.next() == true) {
+                    try {
+
+                        stmt1 = con.createStatement();
+
+                        // execució de la sentencia 
+                        
+                        int numReg = stmt1.executeUpdate("DELETE FROM Alumno WHERE codiAlumne='" + codiAlumne + "'");
+                        System.out.println("\u001B[34m\nS'HA ELIMINAT (" + numReg + ") ALUMNE AMB EL CODI (" + codiAlumne + ")\u001B[0m" + "\n");
+
+                        stmt1.close();
+
+                    } catch (SQLException ex) {
+                        System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER AFEGIR NOU ALUMNE\u001B[0m");
+                    }
+                    
+
+                } else {
+                    System.out.println("\n" + "\u001B[31mAQUEST CODI D'ALUMNE NO EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                    System.out.println("\u001B[31mNO S'HA ELIMINAT CAP REGISTRE\u001B[0m");
+                    System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
+                }
+
+                rs0.close();
+                stmt0.close();
+                tancaConnexio(con);
+            } else {
+                System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR ALUMNE EXISTENT\u001B[0m");
+        }
+
+    }  
+    
+    //METODE PER MODIFICAR TUTOR
+    public void modificaTutor() {
+
+        /*
+        Scanner entradaCodiAlumne = new Scanner(System.in);
+        String codiAlumne;
+        System.out.print("\nINTRODUEIX EL CODI DE L'ALUMNE (INICIALS + 2 DIGITS): ");
+        codiAlumne = entradaCodiAlumne.nextLine();
+        
+        Connection con;
+        Statement stmt0;
+        ResultSet rs0;
+        Statement stmt1;
+        ResultSet rs1;
+        
+        try {
+            con = estableixConnexio();
+            if (con != null) {
+
+                // Crear una sentencia amb l'SQL que volem executar
+                stmt0 = con.createStatement();
+
+                // execució de la sentencia 
+                rs0 = stmt0.executeQuery("SELECT codiAlumne FROM Alumno WHERE codiAlumne ='" + codiAlumne + "'");
+
+                if (rs0.next() == true) {
+                    try {
+
+                        stmt1 = con.createStatement();
+
+                        // execució de la sentencia 
+                        
+                        int numReg = stmt1.executeUpdate("DELETE FROM Alumno WHERE codiAlumne='" + codiAlumne + "'");
+                        System.out.println("\u001B[34m\nS'HA ELIMINAT (" + numReg + ") ALUMNE AMB EL CODI (" + codiAlumne + ")\u001B[0m" + "\n");
+
+                        stmt1.close();
+
+                    } catch (SQLException ex) {
+                        System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER AFEGIR NOU ALUMNE\u001B[0m");
+                    }
+                    
+
+                } else {
+                    System.out.println("\n" + "\u001B[31mAQUEST CODI D'ALUMNE NO EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                    System.out.println("\u001B[31mNO S'HA ELIMINAT CAP REGISTRE\u001B[0m");
+                    System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
+                }
+
+                rs0.close();
+                stmt0.close();
+                tancaConnexio(con);
+            } else {
+                System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR ALUMNE EXISTENT\u001B[0m");
+        }
+*/
+
+    } 
+    
+    //METODE ESTATIC PER VALIDAR CODI ALUMNE
+    public static boolean validaCodiAlumne(String codiAlumne) {
+
+        // EXPRESSIÓ REGULAR CODI ALUMNE
+        String codiRegex = "^[A-Z]{3}[0-9]{2}$";
+        Pattern patro = Pattern.compile(codiRegex);
+        Matcher validacio = patro.matcher(codiAlumne);
+        return validacio.matches();
 
     }
 
@@ -422,8 +587,8 @@ public class AlzinaAlomarProg11 {
         System.out.println("3. Mostra el llistat d'alumnes d'un determinat tutor, indicant el nombre total d'alumnes d'aquest tutor a la fi de la llista.");
         System.out.println("4. Inserir un nou tutor.");
         System.out.println("5. Inserir un nou alumne.");
-        System.out.println("6. Demanar per teclat el codi d'un alumne i eliminar-lo de la base de dades.");
-        System.out.println("7. Modificar el nom d'un tutor, donat el seu codi per teclat.");
+        System.out.println("6. Eliminar alumne.");
+        System.out.println("7. Modificar el nom d'un tutor.");
         System.out.println("0. SORTIR DEL PROGRAMA");
         
 
