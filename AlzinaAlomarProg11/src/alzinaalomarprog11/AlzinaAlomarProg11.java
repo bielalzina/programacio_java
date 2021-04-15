@@ -503,64 +503,73 @@ public class AlzinaAlomarProg11 {
     //METODE PER MODIFICAR TUTOR
     public void modificaTutor() {
 
-        /*
-        Scanner entradaCodiAlumne = new Scanner(System.in);
-        String codiAlumne;
-        System.out.print("\nINTRODUEIX EL CODI DE L'ALUMNE (INICIALS + 2 DIGITS): ");
-        codiAlumne = entradaCodiAlumne.nextLine();
-        
+        Scanner entradaCodiTutor = new Scanner(System.in);
+        int codiTutor;
+        System.out.print("\nINTRODUEIX EL CODI DEL TUTOR (numero sencer i positiu) A MODIFICAR: ");
+
         Connection con;
         Statement stmt0;
         ResultSet rs0;
         Statement stmt1;
         ResultSet rs1;
-        
+
         try {
+            codiTutor = entradaCodiTutor.nextInt();
+
             con = estableixConnexio();
             if (con != null) {
-
-                // Crear una sentencia amb l'SQL que volem executar
-                stmt0 = con.createStatement();
-
-                // execució de la sentencia 
-                rs0 = stmt0.executeQuery("SELECT codiAlumne FROM Alumno WHERE codiAlumne ='" + codiAlumne + "'");
-
-                if (rs0.next() == true) {
-                    try {
-
-                        stmt1 = con.createStatement();
-
-                        // execució de la sentencia 
+                
+                try {
+                    // Crear una sentencia amb l'SQL que volem executar
+                    stmt0 = con.createStatement();
+                    
+                    // execució de la sentencia
+                    rs0 = stmt0.executeQuery("SELECT codiTutor FROM Tutor WHERE codiTutor =" + codiTutor + "");
+                    
+                    if (rs0.next() == true) {
                         
-                        int numReg = stmt1.executeUpdate("DELETE FROM Alumno WHERE codiAlumne='" + codiAlumne + "'");
-                        System.out.println("\u001B[34m\nS'HA ELIMINAT (" + numReg + ") ALUMNE AMB EL CODI (" + codiAlumne + ")\u001B[0m" + "\n");
-
-                        stmt1.close();
-
-                    } catch (SQLException ex) {
-                        System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER AFEGIR NOU ALUMNE\u001B[0m");
+                        Scanner entradaNom = new Scanner(System.in);
+                        String nomLlinatgesTutor;
+                        System.out.print("\nINTRODUEIX EL NOM I LLINATGES CORRECTES DEL TUTOR: ");
+                        nomLlinatgesTutor = entradaNom.nextLine();
+                        
+                        try {
+                            
+                            stmt1 = con.createStatement();
+                            
+                            // execució de la sentencia
+                            stmt1.executeUpdate("UPDATE  Tutor  SET nomTutor = '" + nomLlinatgesTutor + "' WHERE codiTutor = " + codiTutor + "");
+                            
+                            System.out.println("\u001B[34m\nTUTOR (" + nomLlinatgesTutor + ") ACTUALITZAT\u001B[0m" + "\n");
+                            
+                            stmt1.close();
+                            
+                        } catch (SQLException ex) {
+                            System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER ACTUALITZAR EL TUTOR\u001B[0m");
+                        }
+                        
+                    } else {
+                        System.out.println("\n" + "\u001B[31mEL CODI DE TUTOR INTRODUÏT NO EXISTEIX EN LA BASE DE DADES\u001B[0m");
+                        System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
                     }
                     
-
-                } else {
-                    System.out.println("\n" + "\u001B[31mAQUEST CODI D'ALUMNE NO EXISTEIX EN LA BASE DE DADES\u001B[0m");
-                    System.out.println("\u001B[31mNO S'HA ELIMINAT CAP REGISTRE\u001B[0m");
-                    System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
+                    rs0.close();
+                    stmt0.close();
+                    tancaConnexio(con);
+                    
+                } catch (SQLException ex) {
+                    System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR CODI TUTOR EXISTENT\u001B[0m");
                 }
-
-                rs0.close();
-                stmt0.close();
-                tancaConnexio(con);
             } else {
                 System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
             }
 
-        } catch (SQLException ex) {
-            System.out.println("\n" + "\u001B[31mNO S'HA POGUT EXECUTAR LA CONSULTA SQL PER CONSTATAR ALUMNE EXISTENT\u001B[0m");
+        } catch (InputMismatchException e) {
+            System.out.println("\n" + "\u001B[31mHAS INTRODUÏT UN CODI DE TUTOR AMB UN FORMAT INCORRECTE.\u001B[0m");
+            System.out.println("\u001B[34mTORNANT CARREGAR MENU INCIAL.\u001B[0m" + "\n");
         }
-*/
 
-    } 
+    }
     
     //METODE ESTATIC PER VALIDAR CODI ALUMNE
     public static boolean validaCodiAlumne(String codiAlumne) {
