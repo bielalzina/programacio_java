@@ -10,11 +10,11 @@ package alzinaalomargabrielprog10;
  * @author gabriel
  */
 public class Partit {
-    
-    String equipLocal;
-    String equipVisitant;
-    int golsLocal;
-    int golsVisitant;
+
+    private String equipLocal;
+    private String equipVisitant;
+    private int golsLocal;
+    private int golsVisitant;
 
     public Partit(String equipLocal, String equipVisitant, int golsLocal, int golsVisitant) {
         this.equipLocal = equipLocal;
@@ -54,8 +54,5 @@ public class Partit {
     public void setGolsVisitant(int golsVisitant) {
         this.golsVisitant = golsVisitant;
     }
-    
-    
-    
-    
+
 }
