@@ -16,9 +16,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
 /**
  *
  * @author gabriel
@@ -31,8 +28,7 @@ public class AlzinaAlomarProg11 {
     public static void main(String[] args) {
 
         AlzinaAlomarProg11 aap11=new AlzinaAlomarProg11();
-        
-  
+
         byte opcio = 0;
         do {
             opcio = menuOpcions();
@@ -58,9 +54,6 @@ public class AlzinaAlomarProg11 {
 
             }
         } while (opcio != (byte) 0);
-        
-        
-        
 
     }
     
@@ -123,14 +116,8 @@ public class AlzinaAlomarProg11 {
                 // Tancam les connexions
                 rs.close();
                 stmt.close();
-                
-                //System.out.println("*******************");
-                //System.out.println("CONNEXIO: "+con.isClosed());
-                
+             
                 tancaConnexio(con);
-                
-                //System.out.println("CONNEXIO: "+con.isClosed());
-                //System.out.println("*******************");
                 
             } else {
                 System.out.println("\n" + "\u001B[31mNO S'HA POGUT CONNECTAR AMB EL SERVIDOR MYSQL\u001B[0m");
@@ -593,7 +580,7 @@ public class AlzinaAlomarProg11 {
 
         System.out.println("\n1. Mostra a tots els alumnes de la base de dades");
         System.out.println("2. Mostra a tots els tutors de la base de dades.");
-        System.out.println("3. Mostra el llistat d'alumnes d'un determinat tutor, indicant el nombre total d'alumnes d'aquest tutor a la fi de la llista.");
+        System.out.println("3. Mostra el llistat d'alumnes d'un determinat tutor.");
         System.out.println("4. Inserir un nou tutor.");
         System.out.println("5. Inserir un nou alumne.");
         System.out.println("6. Eliminar alumne.");
