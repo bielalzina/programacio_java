@@ -35,6 +35,8 @@ public class Exercici01_10 {
             }
         } while (!entradaNum1OK);
         
+        major=num1;
+        
         System.out.println("Introdueix el segon numero: ");
         
         do {
@@ -46,6 +48,10 @@ public class Exercici01_10 {
                 input.next();
             }
         } while (!entradaNum2OK);
+        
+        if (num2>major){
+            major=num2;
+        }
 
         System.out.println("Introdueix el tercer numero: ");
         
@@ -59,20 +65,12 @@ public class Exercici01_10 {
             }
         } while (!entradaNum3OK);
         
-            
+         if (num3>major){
+            major=num3;
+        }   
         
         
-        if (num1 > num2 && num1 > num3){
-            major=num1;
-        }
-        if (num2 > num1 && num2 > num3){
-         
-               major=num2;
-        }
-        if (num3 > num2 && num3 > num1){
-         
-                major=num3;
-        }
+        
         System.out.println("MAJOR = "+major);
         
     }

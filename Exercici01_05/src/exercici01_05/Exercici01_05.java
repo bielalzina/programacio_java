@@ -3,27 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exercic01_06;
+package exercici01_05;
 
 import java.util.Scanner;
 
 /**
  *
- * @author gabriel
+ * @author bielalzina
  */
-public class Exercic01_06 {
+public class Exercici01_05 {
+
 
     /**
      * @param args the command line arguments
      */
-        public static void main(String[] args) {
+    public static void main(String[] args) {
         
         Scanner input = new Scanner (System.in);
         boolean inputOk=false;
         System.out.println("Introdueix un numero sencer: ");
         
         
-        while (!inputOk) {
+        do {
             try {
                 int num = input.nextInt();
                 double resultat = factorial(num);
@@ -35,14 +36,17 @@ public class Exercic01_06 {
                 input.next();
             }
 
-        }
+        } while (!inputOk);
     }
     
     public static double factorial(int num){
         double fact=1;
-        for (int i = 1; i <= num; i++) {
-                    fact = fact * i;
-        }
+        int i=1;
+        do {
+            fact=fact*i;
+            i++;
+        } while (i<=num);
+        
         return fact;
     }
     
