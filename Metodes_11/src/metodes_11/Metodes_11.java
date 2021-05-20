@@ -24,7 +24,13 @@ public class Metodes_11 {
         System.out.println("\nTe com a minim 8 caracters: "+comprova_Num_Caracters(password)+" ("+password.length()+")");
         System.out.println("Numero de digits: "+conta_Digits(password));
         System.out.println("Numero de lletres: "+conta_Lletres(password));
-        
+        System.out.println("");
+        System.out.println("PASSWORD"+String.format("|%20s|","Hello World"));
+        System.out.println("PASSWORD"+String.format("|%-20s|","Hello World"));
+        System.out.println("PASSWORD"+String.format("|%.5s|","Hello World"));
+        System.out.println("PASSWORD"+String.format("|%20.5s|","Hello World"));
+        System.out.println("PRINTS : "+String.format("|%5d|",10));
+        System.out.println("PRINTS : "+String.format("|%10.4f|",4.2));
         
     }
     
